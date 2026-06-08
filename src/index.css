@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Serif+TC:wght@500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Noto Serif TC', serif;
+}
+
+@layer utilities {
+  /* Tap target safety for iOS/iPhone 12 */
+  .safe-tap {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Custom background animations */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+    filter: blur(80px);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.15);
+    filter: blur(100px);
+  }
+}
+
+@keyframes floatIcon {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(3deg);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes waveGrow {
+  0%, 100% { height: 6px; }
+  50% { height: 28px; }
+}
+
+/* Starry Sky Classes in Vibrant Palette format - Darkened for eye-safe Night Mode */
+.fairy-bg {
+  background: linear-gradient(135deg, #090814 0%, #151025 50%, #1c1433 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+.btn-vibrant-3d {
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 0 #5b21b6;
+  transition: all 0.1s ease-in-out;
+}
+.btn-vibrant-3d:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #5b21b6;
+}
+
+.btn-vibrant-3d-pink {
+  background: #ec4899;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 0 #9d174d;
+  transition: all 0.1s ease-in-out;
+}
+.btn-vibrant-3d-pink:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #9d174d;
+}
+
+.glow-orb-primary {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: pulseGlow 12s infinite ease-in-out;
+  pointer-events: none;
+}
+
+.glow-orb-secondary {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: pulseGlow 9s infinite ease-in-out alternate;
+  pointer-events: none;
+}
+
+.fairy-icon-float {
+  animation: floatIcon 4s infinite ease-in-out;
+}
+
+.star-point {
+  position: absolute;
+  background-color: white;
+  border-radius: 50%;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+/* Sound wave visualization heights */
+.sound-bar {
+  width: 4px;
+  background-color: #8b5cf6;
+  border-radius: 2px;
+  display: inline-block;
+  margin: 0 2px;
+}
+
+.sound-bar:nth-child(2) { animation: waveGrow 1.2s infinite 0.1s ease-in-out; }
+.sound-bar:nth-child(3) { animation: waveGrow 0.8s infinite 0.3s ease-in-out; background-color: #ec4899; }
+.sound-bar:nth-child(4) { animation: waveGrow 1.4s infinite 0.5s ease-in-out; background-color: #3b82f6; }
+.sound-bar:nth-child(5) { animation: waveGrow 1.0s infinite 0.2s ease-in-out; background-color: #a78bfa; }
+.sound-bar:nth-child(6) { animation: waveGrow 1.1s infinite 0.4s ease-in-out; }
+
+/* Custom paper layout styled with eye-safe Twilight Amethyst Night Mode */
+.parchment-paper {
+  background-color: #110e24; /* Cozy dark nebula deep violet */
+  border: 3px solid #2e264f; /* Soft purple starry borders */
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5), 0 5px 15px -2px rgba(139, 92, 246, 0.1);
+  border-radius: 28px;
+  position: relative;
+}
+
+.parchment-paper::before {
+  content: '';
+  position: absolute;
+  top: 6px; left: 6px; right: 6px; bottom: 6px;
+  border: 1px dashed rgba(167, 139, 250, 0.3); /* Soothing starry dashed lane */
+  border-radius: 22px;
+  pointer-events: none;
+}
+
+/* Force dark-mode contrast corrections on text inside the parchment cards */
+.parchment-paper .text-amber-950 {
+  color: #ede9f9; /* Comforting soft dream-lavender text */
+}
+
+.parchment-paper .text-orange-950 {
+  color: #e879f9; /* Radiant pinky crystal chapter status */
+}
+
+.parchment-paper .text-zinc-650,
+.parchment-paper .text-zinc-600 {
+  color: #c084fc; /* Comfortable violet secondary text */
+}
+
+.parchment-paper .text-amber-900\/30 {
+  color: rgba(167, 139, 250, 0.25); /* Subtle chapter separating stars */
+}
+
+.parchment-paper .border-rose-950\/10,
+.parchment-paper .border-rose-950\/20 {
+  border-color: rgba(167, 139, 250, 0.15); /* Sleek split line */
+}
+
+/* Color and background overrides for internal character badge */
+.parchment-paper .bg-pink-100 {
+  background-color: rgba(236, 72, 153, 0.18);
+  border-color: rgba(236, 72, 153, 0.3);
+  color: #fecdd3; /* Soft light rose */
+}
+
+/* Color and background overrides for rewinding/travel back buttons to remain high-contrast but dark */
+.parchment-paper .bg-violet-100 {
+  background-color: rgba(139, 92, 246, 0.18);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #ddd6fe; /* Comfortable lavender violet */
+}
+.parchment-paper .bg-violet-100:hover {
+  background-color: rgba(139, 92, 246, 0.28);
+}
+
+/* Safe Area Inset adaptation for newer iPhones (including iPhone 12) */
+.ios-padding-bottom {
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+}
