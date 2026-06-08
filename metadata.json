@@ -1,6 +1,6 @@
 {
-  "name": "童話星願 - 神奇故事編織者",
-  "description": "一個能讓童話故事變身互動繪本、支援無限故事生成與語音朗讀的神奇童話世界。",
+  "name": "童話星願｜無限童話故事生成與朗讀器",
+  "description": "一個能讓童話故事無限續寫延伸、完美支援語音朗讀、並專為手機（iPhone 12等）優化的互動式童話創作器。",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
