@@ -27,6 +27,42 @@ function getDynamicGeminiClient(reqApiKey?: string): GoogleGenAI {
   });
 }
 
+// Resilient helper to call Gemini with secondary fallback models if first gets overloaded (e.g., 503 Spikes)
+async function generateStoryContent(ai: GoogleGenAI, primaryModel: string, options: any) {
+  try {
+    return await ai.models.generateContent({
+      model: primaryModel,
+      ...options,
+    });
+  } catch (error: any) {
+    const errorStr = (error && typeof error === "object") ? JSON.stringify(error) : (error?.message || String(error));
+    const isServiceInterrupted = 
+      errorStr.includes("503") || 
+      errorStr.includes("UNAVAILABLE") || 
+      errorStr.includes("demand") || 
+      errorStr.includes("overloaded") ||
+      errorStr.includes("RESOURCE_EXHAUSTED") || 
+      errorStr.includes("429");
+
+    if (isServiceInterrupted) {
+      console.warn(`[Gemini API Warning] Primary model (${primaryModel}) is experiencing high demand. Retrying with gemini-3.1-flash-lite as fallback...`);
+      try {
+        return await ai.models.generateContent({
+          model: "gemini-3.1-flash-lite",
+          ...options,
+        });
+      } catch (fallbackError: any) {
+        console.warn("[Gemini API Warning] Fallback to gemini-3.1-flash-lite failed. Retrying with gemini-flash-latest...");
+        return await ai.models.generateContent({
+          model: "gemini-flash-latest",
+          ...options,
+        });
+      }
+    }
+    throw error;
+  }
+}
+
 // Genre prompt helpers
 const genrePrompts: Record<string, string> = {
   whimsical: "溫馨治癒、色彩繽紛、充滿可愛與不可思議魔法的氛圍。",
@@ -65,8 +101,7 @@ app.post("/api/story/start", async (req, res) => {
 
     const systemInstruction = "你是一位滿懷愛心與詩意、極度懂孩子心理的台灣專業童話作家。你撰寫的文字優美、柔和，極具畫面感，擅長在故事結尾留下扣人心弦的未完待續懸念。你必須回傳 JSON 物件，格式嚴格遵循 schema 的定義。";
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+    const response = await generateStoryContent(ai, "gemini-3.5-flash", {
       contents: basePrompt,
       config: {
         systemInstruction,
@@ -132,14 +167,13 @@ app.post("/api/story/continue", async (req, res) => {
       創作規範：
       1. 請延續上文的故事情節與世界觀設定，在「${selectedOption}」的引導下，創作下一章全新內容。
       2. 全新一章故事，字數依然維持在 150 - 250 字左右的繁體中文（台灣習慣詞），流暢、溫柔。
-      3. 這一章的結尾，也「必須」留下一個令人心癢難耐、想知道後面發生什麼的 cliffhanger (懸念)，維持「未完待續」的浪漫神祕感。文字結尾可以用令人遐想的對話或突發奇妙情景。
+      3. 這一章的結尾，也「必須」留下一個令人心癢難耐、想知道後面发生什麼的 cliffhanger (懸念)，維持「未完待續」的浪漫神祕感。文字結尾可以用令人遐想的對話或突發奇妙情景。
       4. 為下一章提供另外三個全新方向、充滿無盡探索驚喜的自選發展選項。
     `;
 
     const systemInstruction = "你是一位滿懷愛心與詩意、極度懂孩子心理的台灣專業童話作家。你撰寫的文字優美、柔和，極具畫面感，擅長在故事結尾留下扣人心弦的未完待續懸念。你必須回傳 JSON 物件，格式嚴格遵循 schema 的定義。";
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
+    const response = await generateStoryContent(ai, "gemini-3.5-flash", {
       contents: conversationText,
       config: {
         systemInstruction,
